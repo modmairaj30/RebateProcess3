@@ -1325,14 +1325,14 @@ public String getNomenclature(String customer,String saleOrg,String division,Str
 			}
 
 			if(schemeCategory.length()>0) {
-				String sqlCategory = "select auart from zscheme_type  where  sch_cat='"+division+"' limit 1";
+				String sqlSchemeCategory = "select auart,CAT_CODE from zscheme_type  where  sch_cat='"+category+"' and DESCRI='"+scheme_type+"'  limit 1";
 				statement = jdbcConnection.createStatement();
-				resultSet = statement.executeQuery(sqlCategory);
+				resultSet = statement.executeQuery(sqlSchemeCategory);
 				if (resultSet.next()) {
-					nomenclatureNo+=resultSet.getString("auart");
+					nomenclatureNo+=	resultSet.getString("auart");
+					nomenclatureNo+=	resultSet.getString("CAT_CODE");
 				}
 				}
-
 			return nomenclatureNo;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
