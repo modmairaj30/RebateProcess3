@@ -1329,11 +1329,11 @@ public String getNomenclature(String customer,String saleOrg,String division,Str
 				statement = jdbcConnection.createStatement();
 				resultSet = statement.executeQuery(sqlCategory);
 				if (resultSet.next()) {
-					nomenclatureNo=	resultSet.getString("Dv").substring(0, 3);
+					nomenclatureNo+=resultSet.getString("auart");
 				}
 				}
 
-			return divName.substring(0,3);
+			return nomenclatureNo;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
