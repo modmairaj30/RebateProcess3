@@ -1,0 +1,53 @@
+package com.dalmia.dce.utilities;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+public interface PeriodUtil {
+	static void calcPeriod(String fromDate, String toDate) throws ParseException {
+		String fromDate1 = "2018-07-01";
+		String toDate1 = "2018-07-10";
+
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+		Calendar calFromDt = Calendar.getInstance();
+		calFromDt.setTime(df.parse(fromDate));
+
+		Calendar calToDt = Calendar.getInstance();
+		calToDt.setTime(df.parse(toDate));
+
+		int difInMonths = (calToDt.get(Calendar.MONTH) - calFromDt.get(Calendar.MONTH)) + 1;
+		System.out.println("difInMonths :  " + difInMonths);
+
+		String period = "";
+		int month = calFromDt.get(Calendar.MONTH) + 1;
+		int quarter = month % 3 == 0 ? (month / 3) : (month / 3) + 1;
+		if (difInMonths == 12) {
+			period = "A0";
+		} else if (difInMonths == 6 && month == 1) {
+			period = "H1";
+		} else if (difInMonths == 6 && month == 7) {
+			period = "H2";
+		} else if (difInMonths == 1) {
+			int difInDays = (calToDt.get(Calendar.DATE) - calFromDt.get(Calendar.DATE));
+			if (difInDays > 30) {
+				if (String.valueOf(month).length() < 10) {
+					period = "0" + String.valueOf(month);
+				}
+			} else {
+				period = "P0";
+			}
+		} else if (calToDt.getTime().after(calFromDt.getTime())) {
+			period = "Q" + quarter;
+		} else {
+			period = "P0";
+		}
+
+		System.out.println("period : " + period);
+
+	}
+
+}
