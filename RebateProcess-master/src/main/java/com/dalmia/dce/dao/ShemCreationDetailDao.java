@@ -1245,97 +1245,105 @@ public String getMaxId() throws SQLException {
 	}
 
 public String getNomenclature(String customer,String saleOrg,String division,String region,String stateCode,String distributionChannel,String schemeCategory,String schemeType)throws SQLException {
-	/*example query:-
-	select SPART as Dv,VTEXT as Name from TSPAT where spart='01' limit 1;
-	select BLAND as Rg,BEZEI as Description from T005U WHERE LAND1='IN' and bland='1' limit 1;
-	SELECT cityc as city_id,BEZEI as Description FROM T005h where LAND1='IN' and cityc='9999' limit 1;
-	select VTWEG as DChl,VTEXT as Name from TVTWT  where VTWEG='01' limit 1;
-	select * from knvv
-	CEMSTTN1TRSSRBCD082018001
-	x.chars().filter(c -> Character.isUpperCase(c))
-                .forEach(c -> System.out.print((char) c + " "));
-                
-                select kvgr2 from knvv; state code
-select VKORG  from TVKO  sale org
-SELECT kunnr as Customer,Name1 as Name1  FROM kna1 customer
-State code:---
------------------------------
-select kvgr2 from knvv where vkorg='1000' and vtweg='1' and kunnr='7013899';
-select VKORG  from TVKO
-SELECT kunnr as Customer,Name1 as Name1  FROM kna1;
-select vkorg,vtweg,kunag from wb2_v_vbrk_vbrp2
+		/*example query:-
+		select SPART as Dv,VTEXT as Name from TSPAT where spart='01' limit 1;
+		select BLAND as Rg,BEZEI as Description from T005U WHERE LAND1='IN' and bland='1' limit 1;
+		SELECT cityc as city_id,BEZEI as Description FROM T005h where LAND1='IN' and cityc='9999' limit 1;
+		select VTWEG as DChl,VTEXT as Name from TVTWT  where VTWEG='01' limit 1;
+		select * from knvv
+		CEMSTTN1TRSSRBCD082018001
+		x.chars().filter(c -> Character.isUpperCase(c))
+	                .forEach(c -> System.out.print((char) c + " "));
+	                
+	                select kvgr2 from knvv; state code
+	select VKORG  from TVKO  sale org
+	SELECT kunnr as Customer,Name1 as Name1  FROM kna1 customer
+	State code:---
+	-----------------------------
+	select kvgr2 from knvv where vkorg='1000' and vtweg='1' and kunnr='7013899';
+	select VKORG  from TVKO
+	SELECT kunnr as Customer,Name1 as Name1  FROM kna1;
+	select vkorg,vtweg,kunag from wb2_v_vbrk_vbrp2
 
 
-State code query==
-select kvgr2 from knvv where vkorg='1000' and vtweg='1' and kunnr='7013899';
+	State code query==
+	select kvgr2 from knvv where vkorg='1000' and vtweg='1' and kunnr='7013899';
 
-	*/
-	Connection jdbcConnection =null;
-	Statement statement = null;
-	ResultSet resultSet =null;
-	String nomenclatureNo="";
-	try {
-		
-		
-		jdbcConnection = dataSource.getConnection();
-		if(division.length()>0) {
-		String sqlDivision = "select SPART as Dv,VTEXT as Name from TSPAT  where SPART='"+division+"' limit 1";
-		statement = jdbcConnection.createStatement();
-		resultSet = statement.executeQuery(sqlDivision);
-		if (resultSet.next()) {
-			nomenclatureNo=	resultSet.getString("Dv").substring(0, 3);
-		}
-		}
-		
-		if(region.length()>0) {
-			String sqlRegion = "select BLAND as Rg,BEZEI as Description from T005U WHERE LAND1='IN' and BLAND='"+region+"' limit 1";
+		*/
+		Connection jdbcConnection =null;
+		Statement statement = null;
+		ResultSet resultSet =null;
+		String nomenclatureNo="";
+		try {
+			
+			
+			jdbcConnection = dataSource.getConnection();
+			if(division.length()>0) {
+			String sqlDivision = "select SPART as Dv,VTEXT as Name from TSPAT  where SPART='"+division+"' limit 1";
 			statement = jdbcConnection.createStatement();
-			resultSet = statement.executeQuery(region);
+			resultSet = statement.executeQuery(sqlDivision);
 			if (resultSet.next()) {
-				nomenclatureNo +=	resultSet.getString("Rg").substring(0, 2);
+				nomenclatureNo=	resultSet.getString("Dv").substring(0, 3);
+			}
+			}
+			
+			if(region.length()>0) {
+				String sqlRegion = "select scode from state_code where bukrs='"+company_code+"' limit 1";
+				statement = jdbcConnection.createStatement();
+				resultSet = statement.executeQuery(region);
+				if (resultSet.next()) {
+					nomenclatureNo +=	resultSet.getString("scode");
+				}
+
+			}
+			
+			if(stateCode.length()>0) {
+			String sqlCityCode = "select kvgr2 from knvv where vkorg='"+saleOrg+"' and vtweg='"+distributionChannel+"' and kunnr='"+customer+"' limit 1";
+			
+			statement = jdbcConnection.createStatement();
+			resultSet = statement.executeQuery(sqlCityCode);
+			if (resultSet.next()) {
+				nomenclatureNo +=	resultSet.getString("kvgr2");
+			}
+			}
+			if(distributionChannel.length()>0) {
+			String sqlDistributionChannel = "select VTWEG as DChl,VTEXT as Name from TVTWT  where VTWEG='"+sqlDistributionChannel+"' limit 1";
+			statement = jdbcConnection.createStatement();
+			resultSet = statement.executeQuery(distributionChannel);
+			if (resultSet.next()) {
+				nomenclatureNo +=	resultSet.getString("DChl").substring(0, 2);
+			}
+			}
+			
+			
+			
+			statement = jdbcConnection.createStatement();
+			resultSet = statement.executeQuery(sql);
+			String divName = "";
+			while (resultSet.next()) {
+			divName = resultSet.getString("Name");
 			}
 
-		}
-		
-		if(stateCode.length()>0) {
-		String sqlCityCode = "select kvgr2 from knvv where vkorg='"+saleOrg+"' and vtweg='"+distributionChannel+"' and kunnr='"+customer+"' limit 1";
-		
-		statement = jdbcConnection.createStatement();
-		resultSet = statement.executeQuery(sqlCityCode);
-		if (resultSet.next()) {
-			nomenclatureNo +=	resultSet.getString("kvgr2");
-		}
-		}
-		if(distributionChannel.length()>0) {
-	//	String sqlDistributionChannel = "select VTWEG as DChl,VTEXT as Name from TVTWT  where VTWEG='"+sqlDistributionChannel+"' limit 1";
-		statement = jdbcConnection.createStatement();
-		resultSet = statement.executeQuery(distributionChannel);
-		if (resultSet.next()) {
-			nomenclatureNo +=	resultSet.getString("DChl").substring(0, 2);
-		}
-		}
-		
-		
-		
-		statement = jdbcConnection.createStatement();
-		
-		String divName = "";
-		while (resultSet.next()) {
-		divName = resultSet.getString("Name");
-		}
+			if(schemeCategory.length()>0) {
+				String sqlCategory = "select auart from zscheme_type  where  sch_cat='"+division+"' limit 1";
+				statement = jdbcConnection.createStatement();
+				resultSet = statement.executeQuery(sqlCategory);
+				if (resultSet.next()) {
+					nomenclatureNo=	resultSet.getString("Dv").substring(0, 3);
+				}
+				}
 
-
-		return divName.substring(0,3);
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}finally {
-		resultSet.close();
-		statement.close();
-		jdbcConnection.close();
+			return divName.substring(0,3);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			resultSet.close();
+			statement.close();
+			jdbcConnection.close();
+		}
+		return "";
 	}
-	return null;
-}
 
 
 public String updateAproved(String scheme_no)throws SQLException {
