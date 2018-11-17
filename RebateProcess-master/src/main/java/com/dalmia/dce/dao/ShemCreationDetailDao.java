@@ -1210,11 +1210,24 @@ public String getMaxId() throws SQLException {
 		System.out.println(sql);
 		 statement = jdbcConnection.createStatement();
 		 resultSet = statement.executeQuery(sql);
-		 String maxId="";
-		
-		if (resultSet.next()) {
-			
-		maxId=resultSet.getString("id");
+		 int maxId = 1;
+			String sr = "";
+			if (resultSet.next()) {
+
+				maxId = resultSet.getInt("id");
+
+				if (maxId < 10) {
+					sr = "00" + maxId;
+				} else if (maxId < 100) {
+					sr = "0" + maxId;
+				} else {
+					sr = String.valueOf(maxId);
+				}
+
+				System.out.println(sr);
+
+			}
+	
 			
 		}
 		
