@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public interface PeriodUtil {
-	static void calcPeriod(String fromDate, String toDate) throws ParseException {
+	static String calcPeriod(String fromDate, String toDate) throws ParseException {
 		String fromDate1 = "2018-07-01";
 		String toDate1 = "2018-07-10";
 
@@ -45,8 +45,9 @@ public interface PeriodUtil {
 		} else {
 			period = "P0";
 		}
-
 		System.out.println("period : " + period);
+		return period;
+		
 
 	}
 
