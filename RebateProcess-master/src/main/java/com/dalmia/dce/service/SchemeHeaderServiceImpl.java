@@ -644,19 +644,21 @@ public class SchemeHeaderServiceImpl implements SchemeHeaderService {
 		String month = simpleDateFormat.format(date);
 		simpleDateFormat.applyPattern("yyyy");
 		String maxId = "";
-		String divisionSq = "";
+		String nomenclature = "";
 		String year = "";
+		String period="";
 		try {
 			maxId = schemcreationDetaiDao.getMaxId();
-			divisionSq = schemcreationDetaiDao.getNomenclature(customer, saleOrg, division, region, stateCode,
+			nomenclature = schemcreationDetaiDao.getNomenclature(customer, saleOrg, division, region, stateCode,
 					distributionChannel, schemeCategory, schemeType);
 			year = simpleDateFormat.format(date);
+			period = PeriodUtil.calcPeriod(schVO.getFromDate().toString(),schVO.getToDate().toString());
 
-		} catch (SQLException e) {
+		} catch (SQLException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		schemeNo = divisionSq + schemeNo + year + maxId;
+		schemeNo = nomenclature  +period+ year + maxId;
 
 		return schemeNo;
 	}
